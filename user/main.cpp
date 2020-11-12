@@ -29,7 +29,7 @@ extern const LPCWSTR LOG_FILE = L"il2cpp-log.txt";
 void Run(){
 	String* _appId = app::Marshal_PtrToStringAnsi((void*)"76ffcfb5-d1aa-4efe-b5f0-9d95d7ef4d7a", NULL);
 	AppSettings* _appSettings = (*PhotonNetwork__TypeInfo).static_fields->photonServerSettings->fields.AppSettings;
-	_appSettings.
+	_appSettings->fields.AppIdRealtime = _appId;
 	
 	_photonHandler_FixedUpdate = (PhotonHandler_FixedUpdate_Hook)app::PhotonHandler_FixedUpdate;
 	_text_set_Text = (Text_set_Text_Hook)app::Text_set_text;
