@@ -6,6 +6,19 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MS Detours", "MS Detours\MS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spasmofobia", "Spasmofobia.vcxproj", "{1FD479C5-D1AB-42EC-A8CC-326D13C4C18E}"
 EndProject
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "Phasmophobia", "..\..\Giochi\Phasmophobia.v.0.176.39 OFME\Phasmophobia.exe", "{B458DD69-3BAC-46AC-A7A9-1C261DF0C64A}"
+	ProjectSection(DebuggerProjectSystem) = preProject
+		PortSupplier = 00000000-0000-0000-0000-000000000000
+		Executable = D:\Desktop\Giochi\Phasmophobia.v.0.176.39 OFME\Phasmophobia.exe
+		RemoteMachine = PC-PIERLUIGI
+		StartingDirectory = D:\Desktop\Giochi\Phasmophobia.v.0.176.39 OFME
+		Environment = Predefinita
+		LaunchingEngine = 00000000-0000-0000-0000-000000000000
+		UseLegacyDebugEngines = No
+		LaunchSQLEngine = No
+		AttachLaunchAction = No
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -30,6 +43,10 @@ Global
 		{1FD479C5-D1AB-42EC-A8CC-326D13C4C18E}.Release|x64.Build.0 = Release|x64
 		{1FD479C5-D1AB-42EC-A8CC-326D13C4C18E}.Release|x86.ActiveCfg = Release|Win32
 		{1FD479C5-D1AB-42EC-A8CC-326D13C4C18E}.Release|x86.Build.0 = Release|Win32
+		{B458DD69-3BAC-46AC-A7A9-1C261DF0C64A}.Debug|x64.ActiveCfg = Release|x64
+		{B458DD69-3BAC-46AC-A7A9-1C261DF0C64A}.Debug|x86.ActiveCfg = Release|x64
+		{B458DD69-3BAC-46AC-A7A9-1C261DF0C64A}.Release|x64.ActiveCfg = Release|x64
+		{B458DD69-3BAC-46AC-A7A9-1C261DF0C64A}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

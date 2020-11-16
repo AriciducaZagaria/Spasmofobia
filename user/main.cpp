@@ -7,56 +7,67 @@
 #include <Windows.h>
 #include <iostream>
 #include "../MS Detours/detours.h"
+#include "il2cpp-init.h"
 #include "il2cpp-appdata.h"
 #include "helpers.h"
 
+extern "C" __declspec(dllexport) void __stdcall Spasmofobia();
+void __stdcall Spasmofobia() { std::cout << "Spasmofobia is here" << std::endl; }
+
 using namespace app;
 
-typedef void(*PhotonHandler_FixedUpdate_Hook)(PhotonHandler*, MethodInfo*);
+typedef void(*PhotonNetwork_ConnectUsingSettings_Hook)(MethodInfo*);
 typedef void(*Text_set_Text_Hook)(Text*, String*, MethodInfo*);
 
-void PhotonHandler_FixedUpdate_Detour(PhotonHandler*, MethodInfo*);
+void PhotonNetwork_ConnectUsingSettings_Detour(MethodInfo*);
 void Text_set_Text_Detour(Text*, String*, MethodInfo*);
 
-PhotonHandler_FixedUpdate_Hook _photonHandler_FixedUpdate;
+PhotonNetwork_ConnectUsingSettings_Hook _photonNetwork_ConnectUsingSettings;
 Text_set_Text_Hook _text_set_Text;
-bool reconnectPhoton = true;
 
 // Set the name of your log file here
 extern const LPCWSTR LOG_FILE = L"il2cpp-log.txt";
 
+const char* serverVersionText = " ArciducaZagaria's Spasmofobia";
+const char* appId = "76ffcfb5-d1aa-4efe-b5f0-9d95d7ef4d7a";
+
 // Custom injected code entry point
 void Run(){
-	String* _appId = app::Marshal_PtrToStringAnsi((void*)"76ffcfb5-d1aa-4efe-b5f0-9d95d7ef4d7a", NULL);
-	AppSettings* _appSettings = (*PhotonNetwork__TypeInfo).static_fields->photonServerSettings->fields.AppSettings;
+	Sleep(10000);
+	init_il2cpp();
+
+	_photonNetwork_ConnectUsingSettings = (PhotonNetwork_ConnectUsingSettings_Hook)app::PhotonNetwork_ConnectUsingSettings;
+
+	DetourTransactionBegin();
+	DetourUpdateThread(GetCurrentThread());
+	DetourAttach(&(PVOID&)_photonNetwork_ConnectUsingSettings, &PhotonNetwork_ConnectUsingSettings_Detour);
+	DetourTransactionCommit();
+}
+
+void PhotonNetwork_ConnectUsingSettings_Detour(MethodInfo* method) {
+
+	String* _appId = app::Marshal_PtrToStringAnsi((void*)appId, NULL);
+	AppSettings* _appSettings = (*app::PhotonNetwork__TypeInfo).static_fields->photonServerSettings->fields.AppSettings;
 	_appSettings->fields.AppIdRealtime = _appId;
-	
-	_photonHandler_FixedUpdate = (PhotonHandler_FixedUpdate_Hook)app::PhotonHandler_FixedUpdate;
+	_appSettings->fields.AppIdVoice = _appId;
+
 	_text_set_Text = (Text_set_Text_Hook)app::Text_set_text;
 
 	DetourTransactionBegin();
 	DetourUpdateThread(GetCurrentThread());
-	DetourDetach(&(PVOID&)_photonHandler_FixedUpdate, &PhotonHandler_FixedUpdate_Detour);
-	DetourDetach(&(PVOID&)_text_set_Text, &Text_set_Text_Detour);
+	DetourAttach(&(PVOID&)_text_set_Text, &Text_set_Text_Detour);
 	DetourTransactionCommit();
+
+	_photonNetwork_ConnectUsingSettings(method);
 }
 
-void PhotonHandler_FixedUpdate_Detour(PhotonHandler* __this, MethodInfo* method) {
-	if (reconnectPhoton){
-		reconnectPhoton = false;
-		app::PhotonNetwork_Disconnect(NULL);
-		app::PhotonNetwork_ConnectUsingSettings(NULL);
-	}
-	_photonHandler_FixedUpdate(__this, method);
-}
 
 void Text_set_Text_Detour(Text* __this, String* value, MethodInfo* method) {
-	MainManager* _mainManager = (*MainManager__TypeInfo).static_fields->___________;
-
+	MainManager* _mainManager = (*app::MainManager__TypeInfo).static_fields->___________;
 	if (__this == _mainManager->fields.serverVersionText) {
-		String* _serverVersionText = app::Marshal_PtrToStringAnsi((void*)"Spasmofobia", NULL);
-		_text_set_Text(__this, _serverVersionText, method);
+		String* _serverVersionText = app::Marshal_PtrToStringAnsi((void*)serverVersionText, NULL);
+		return _text_set_Text(__this, _serverVersionText, method);
 	}
-
 	_text_set_Text(__this, value, method);
 }
+

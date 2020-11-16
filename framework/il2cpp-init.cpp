@@ -48,4 +48,5 @@ void init_il2cpp()
 	#define DO_TYPEDEF(a, n) n ## __TypeInfo = *(n ## __Class**) (baseAddress + a);
 	#include "il2cpp-types-ptr.h"
 	#undef DO_TYPEDEF
+
 }
