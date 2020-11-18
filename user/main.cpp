@@ -30,14 +30,14 @@ void Text_set_Text_Detour(Text*, String*, MethodInfo*);
 PhotonNetwork_ConnectUsingSettings_Hook _photonNetwork_ConnectUsingSettings;
 Text_set_Text_Hook _text_set_Text;
 
-const char* appidFileName = "spasmofobia_appid.txt";
-const char* serverVersionText = " ArciducaZagaria's Spasmofobia";
-const char* appId;
+std::string appidFileName		= "SpasmofobiaAppId.ini",
+            serverVersionText	= " ArciducaZagaria's Spasmofobia",
+	        appId;
 
 // Custom injected code entry point
 void Run(){
 	if (!LoadSettings()) 
-		exit(1);
+		exit(EXIT_FAILURE);
 
 	_photonNetwork_ConnectUsingSettings = (PhotonNetwork_ConnectUsingSettings_Hook)app::PhotonNetwork_ConnectUsingSettings;
 	DetourTransactionBegin();
@@ -48,18 +48,16 @@ void Run(){
 
 void PhotonNetwork_ConnectUsingSettings_Detour(MethodInfo* method) {
 	load_il2cpp_types_ptr();
-	String* _appId = app::Marshal_PtrToStringAnsi((void*)appId, NULL);
-
-	if (!app::ServerSettings_IsAppId(_appId, NULL)) {
+	String* _appId = app::Marshal_PtrToStringAnsi((void*)appId.c_str(), NULL);
+	if (!ServerSettings_IsAppId(_appId, NULL)) {
 		MessageBox(
 			NULL,
-			(LPCWSTR)L"Invalid photon app id.",
+			(LPCWSTR)L"Invalid Photon App ID.",
 			(LPCWSTR)L"Spasmofobia",
 			MB_ICONERROR | MB_OK
 		);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
-
 	AppSettings* _appSettings = (*app::PhotonNetwork__TypeInfo).static_fields->photonServerSettings->fields.AppSettings;
 	_appSettings->fields.AppIdRealtime = _appId;
 	_appSettings->fields.AppIdVoice = _appId;
@@ -75,7 +73,7 @@ void PhotonNetwork_ConnectUsingSettings_Detour(MethodInfo* method) {
 void Text_set_Text_Detour(Text* __this, String* value, MethodInfo* method) {
 	MainManager* _mainManager = (*app::MainManager__TypeInfo).static_fields->___________;
 	if (__this == _mainManager->fields.serverVersionText) {
-		String* _serverVersionText = app::Marshal_PtrToStringAnsi((void*)serverVersionText, NULL);
+		String* _serverVersionText = app::Marshal_PtrToStringAnsi((void*)serverVersionText.c_str(), NULL);
 		return _text_set_Text(__this, _serverVersionText, method);
 	}
 	_text_set_Text(__this, value, method);
@@ -86,19 +84,19 @@ int LoadSettings() {
 	if (appidFile.fail()) {
 		MessageBox(
 			NULL,
-			(LPCWSTR)L"Missing spasmofobia_appid file.",
+			(LPCWSTR)L"Missing SpasmofobiaAppId.ini file.",
 			(LPCWSTR)L"Spasmofobia",
 			MB_ICONERROR | MB_OK
 		);
 		std::ofstream appidFile(appidFileName);
-		appidFile << "Insert your photon app id here";
+		appidFile << "Insert your Photon App ID here.";
 		appidFile.close();
 		return 0;
 	} else {
-		std::string appIdBuff;
-		std::getline(appidFile, appIdBuff);
+		std::string buffer;
+		std::getline(appidFile, buffer);
 		appidFile.close();
-		appId = appIdBuff.c_str();
+		appId = buffer.c_str();
 	}
 	return 1;
 }
