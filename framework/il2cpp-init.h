@@ -5,3 +5,4 @@
 
 // IL2CPP application initializer
 void init_il2cpp();
+void load_il2cpp_types_ptr();
