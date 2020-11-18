@@ -26,11 +26,13 @@ namespace app {
 }
 #undef DO_TYPEDEF
 
+uintptr_t baseAddress;
+
 // IL2CPP application initializer
 void init_il2cpp()
 {
 	// Get base address of IL2CPP module
-	uintptr_t baseAddress = GetBaseAddress();
+	baseAddress = GetBaseAddress();
 
 	using namespace app;
 
@@ -44,9 +46,12 @@ void init_il2cpp()
 	#include "il2cpp-functions.h"
 	#undef DO_APP_FUNC
 
+}
+
+void load_il2cpp_types_ptr() {
+	using namespace app;
 	// Define TypeInfo variables
 	#define DO_TYPEDEF(a, n) n ## __TypeInfo = *(n ## __Class**) (baseAddress + a);
 	#include "il2cpp-types-ptr.h"
 	#undef DO_TYPEDEF
-
 }
